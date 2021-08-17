@@ -1,0 +1,36 @@
+{
+  "name": "njss",
+  "version": "1.0.0",
+  "description": "classname-based css-in-js",
+  "main": "index.js",
+  "scripts": {
+    "babel": "npx babel ./src -d ./"
+  },
+  "keywords": [
+    "css",
+    "css-in-js",
+    "classname",
+    "class",
+    "named",
+    "style"
+  ],
+  "repository": "wooheemusic/njss",
+  "bugs": {
+    "url": "https://github.com/wooheemusic/njss/issues"
+  },
+  "homepage": "https://github.com/wooheemusic/njss#readme",
+  "author": "wooheemusic@gmail.com",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
+    "babel-preset-minify": "^0.5.1"
+  },
+  "bin": {
+    "njss": "./bin/index.js"
+  },
+  "dependencies": {
+    "glob": "^7.1.7"
+  }
+}
