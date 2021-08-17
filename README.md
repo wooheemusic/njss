@@ -12,18 +12,6 @@ This module enables classname-based css-in-js.
 ```js
 njss({
     bigDog: {
-        width: '100px',
-        ':hover': {
-            width: '120px'
-        },
-    },
-    'small-cat': {
-        width: '50px',
-    },
-})
-
-njss({
-    dog: {
         color:'red',
         '@media (orientation: landscape)': {
             ':hover': {
@@ -33,12 +21,23 @@ njss({
                 }
             },        
         }
+    },
+    'small-cat': {
+        '@media (orientation: landscape)': {
+            color: 'purple',
+        }
     }
 })
 ```
+This module does not require something like `getClassName(style)`.
 ```html
 <div class="big-dog">bow-wow</div>
 <div class="small-cat">meow</div>
+```
+
+## result
+```css
+.big-dog{color:red;}@media (orientation: landscape){.big-dog:hover{color:blue;}.big-dog:hover:focus{color:green;}}@media (orientation: landscape){.small-cat{color:purple;}}
 ```
 
 ## `njss-loader`

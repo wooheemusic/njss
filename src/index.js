@@ -24,14 +24,16 @@ const c = a => a; // convert
 const tk = s => /[.#*,\s>+~\[\]]/.test(s);
 
 let isD = Boolean(process && process.env && process.env.NODE_ENV === 'development'); // isDevMode
-const cn = []; // classnames to validate uniqueness
+const cn = isD ? null : []; // classnames to validate uniqueness
 
 function njss(styles) {
-    Object.keys(styles).forEach(key => {
-        key = h(key);
-        if (isD && cn.indexOf(key) !== -1) throw new Error(`classname '${key}' is duplicated.`)
-        cn.push(key);
-        p(styles[key], key).forEach(rule => r(rule));
+    Object.keys(styles).forEach(_key => {
+        const key = h(_key);
+        if (cn) {
+            if (cn.indexOf(key) !== -1) throw new Error(`classname '${key}' is duplicated.`)
+            cn.push(key);
+        }
+        p(styles[_key], key).forEach(rule => r(rule));
     });
 }
 
@@ -74,7 +76,7 @@ const rules = [];
 let sh; // sheet
 if (typeof document !== `undefined`) {
     const se = document.createElement('style');
-    se.setAttribute('id', 'njss');
+    se.setAttribute('id', 'njss-element');
     document.head.appendChild(se);
     sh = se.sheet;
 }
