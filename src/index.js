@@ -31,11 +31,19 @@ function njss(styles) {
         key = h(key);
         if (isD && cn.indexOf(key) !== -1) throw new Error(`classname '${key}' is duplicated.`)
         cn.push(key);
-        p(styles[key], key);
+        p(styles[key], key).forEach(rule => r(rule));
     });
 }
 
+function append(arrA, arrB) {
+    for (let i = 0; i < arrB.length; i++) {
+        arrA.push(arrB[i]);
+    }
+    return arrA;
+}
+
 function p(style, classname, pseudo = '', media = '') { // parse
+    const ruleChain = [];
     const current = [];
     const ps = []; // to defer
     const ms = []; // to defer
@@ -55,13 +63,11 @@ function p(style, classname, pseudo = '', media = '') { // parse
         }
     })
     if (current.length > 0) {
-        const properties = current.reduce((acc, e) => `${acc}${h(e)}:${c(style[e])};`,'');
-        const rule = `.${classname}${pseudo}{${properties}}`
-        const mediaRule = media? `${media}{${rule}}`: rule;
-        r(mediaRule);
+        ruleChain.push(`.${classname}${pseudo}{${current.reduce((acc, e) => `${acc}${h(e)}:${c(style[e])};`, '')}}`)
     }
-    ps.forEach(key => p(style[key], classname, pseudo+key, media));
-    ms.forEach(key => p(style[key], classname, pseudo, key));
+    ps.forEach(key => append(ruleChain, p(style[key], classname, pseudo + key, media)));
+    ms.forEach(key => ruleChain.push(`${key}{${p(style[key], classname, pseudo, key).join('')}}`));
+    return ruleChain;
 }
 
 const rules = [];

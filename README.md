@@ -21,6 +21,20 @@ njss({
         width: '50px',
     },
 })
+
+njss({
+    dog: {
+        color:'red',
+        '@media (orientation: landscape)': {
+            ':hover': {
+                color: 'blue',
+                ':focus': {
+                    color: 'green'
+                }
+            },        
+        }
+    }
+})
 ```
 ```html
 <div class="big-dog">bow-wow</div>
