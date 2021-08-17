@@ -105,8 +105,14 @@ function prodScan() {
     }
 }
 
+let ml = 0; // memoized length
+let ms = ''; // memoized string
 function toString() {
-    return rules.join('');
+    if (ml !== rules.length) {
+        ml = rules.length;
+        ms = rules.join('');
+    }
+    return ms;
 }
 
 njss.dev = dev;
