@@ -53,7 +53,7 @@ This module checks `process.env.NODE_ENV === 'development'` to throw errors for 
 ## For server-side rendering
 Append `njss.toString()` to html responses.
 ```js
-`<script>${njss.toString()}</script>` // part of a html string
+`<style>${njss.toString()}</style>` // part of a html string
 ```
 
 ## Convert numbers and parse arrays for shorthands
