@@ -1,4 +1,4 @@
-# `njss`
+# njss
 This module enables classname-based css-in-js.
 
 ## Restrictions
