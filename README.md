@@ -2,9 +2,9 @@
 This module enables classname-based css-in-js.
 
 ## Restrictions
-- A css rule disallows any other selectors except one class selector and optionally pseudo selectors. (or throws an error in dev mode)
+- A css rule disallows any other selectors except one class selector and optionally pseudo selectors.
 - A css rule has a unique classname. 
-- A class attribute of an DOM element has only one classname.
+- A class attribute of a DOM element has only one classname.
 
 > I think we have no reason to use css-in-js unless we follow the restrictions. We have to re-use sets of css properties under the javascript overwriting merge rule, not in css weird priority rules.
 
