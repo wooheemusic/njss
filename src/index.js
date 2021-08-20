@@ -81,7 +81,7 @@ function csh(prop, key) { // convertShorthand
 }
 
 let isD = Boolean(process && process.env && process.env.NODE_ENV === 'development'); // isDevMode
-const cn = isD ? null : []; // classnames to validate uniqueness
+// const cn = isD ? [] : null; // classnames to validate uniqueness
 
 function njss(styles) { // export default
     p(styles).forEach(rule => r(rule));
@@ -94,7 +94,7 @@ function append(arrA, arrB) {
     return arrA;
 }
 
-function p(style, className = '', pseudo = '', isKeyFrames = false) {
+function p(style, className = '', pseudo = '', isKeyFrames = false, isUnderMedia = false) {
     const ruleChain = [];
     const current = []; // collect css properties
     const ps = []; // deferred, collect pseudo selector
@@ -115,17 +115,17 @@ function p(style, className = '', pseudo = '', isKeyFrames = false) {
             if (className === '') throw new Error(`A classname should precede '${key}'`);
             ps.push(key);
         } else if (className === '') {
-            const hkey = h(key);
-            if (!isKeyFrames && cn) {
-                if (cn.indexOf(hkey) !== -1) throw new Error(`The classname '${key}' is not unique.`);
-                cn.push(hkey);
-            }
-            append(ruleChain, p(style[key], hkey, '', isKeyFrames));
+            // const hkey = h(key);
+            // if (!isKeyFrames && !isUnderMedia && cn) {
+            //     if (cn.indexOf(hkey) !== -1) throw new Error(`The classname '${key}' is not unique.`);
+            //     cn.push(hkey);
+            // }
+            // append(ruleChain, p(style[key], hkey, '', isKeyFrames, isUnderMedia));
+            append(ruleChain, p(style[key], h(key), '', isKeyFrames, isUnderMedia));
         } else {
             current.push(key);
         }
     })
-    // console.log(ruleChain, current, ps, ms, kf, className, isKeyFrames);
     if (current.length > 0) {
         ruleChain.push(`${isKeyFrames ? '' : '.'}${className}${pseudo}{${current.reduce(
             (acc, k) => {
@@ -135,7 +135,7 @@ function p(style, className = '', pseudo = '', isKeyFrames = false) {
             }, '')}}`);
     };
     ps.forEach(key => append(ruleChain, p(style[key], className, pseudo + key)));
-    ms.forEach(key => ruleChain.push(`${key}{${p(style[key], className, pseudo).join('')}}`));
+    ms.forEach(key => ruleChain.push(`${key}{${p(style[key], className, pseudo, false, true).join('')}}`));
     kf.forEach(key => ruleChain.push(`${key}{${p(style[key], className, pseudo, true).join('')}}`));
     return ruleChain;
 }
