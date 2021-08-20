@@ -6,5 +6,6 @@ const presets = [
 ];
 
 const comments = false;
+const sourceMaps = 'inline';
 
-module.exports = { presets, comments };
+module.exports = { presets, comments, sourceMaps };
