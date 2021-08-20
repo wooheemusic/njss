@@ -47,7 +47,6 @@ njss({
 This module does not require something like `getClassName(style)`.
 ```html
 <div class="big-dog">bow-wow</div>
-<div class="small-cat">meow</div>
 ```
 
 ## result

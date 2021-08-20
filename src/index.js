@@ -40,6 +40,10 @@ function deg(prop) {
 
 function csp(prop, key) { // convertSingleProperty
     switch (key) {
+        case 'z-index':
+        case 'tab-size':
+        case 'opacity':
+        case 'order':
         case 'flex':
         case 'flex-grow':
         case 'flex-shrink':
