@@ -104,7 +104,7 @@ function p(style, className = '', pseudo = '', isKeyFrames = false, isUnderMedia
         if (!key) return;
         if (key[0] === '@') {
             if (key[1] === 'k' || key[1] === '-') {
-                if (pseudo !== '' || className !== '') throw newError('@keyframes cannot be nested');
+                if (pseudo !== '' || className !== '') throw new Error('@keyframes cannot be nested');
                 kf.push(key);
             } else {
                 ms.push(key);
