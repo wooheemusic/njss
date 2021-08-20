@@ -80,7 +80,7 @@ function csh(prop, key) { // convertShorthand
     }
 }
 
-let isD = Boolean(process && process.env && process.env.NODE_ENV === 'development'); // isDevMode
+// let isD = Boolean(process && process.env && process.env.NODE_ENV === 'development'); // isDevMode
 // const cn = isD ? [] : null; // classnames to validate uniqueness
 
 function njss(styles) { // export default
@@ -153,27 +153,27 @@ function r(rule) { // addRule
     sh && sh.insertRule(rule, sh.cssRules.length)
 }
 
-function dev() {
-    isD = true;
-}
+// function dev() {
+//     isD = true;
+// }
 
-function prod() {
-    isD = false;
-}
+// function prod() {
+//     isD = false;
+// }
 
-function scan() {
-    // not yet
-}
+// function scan() {
+//     // not yet
+// }
 
-function devScan() {
-    isD && scan();
-}
+// function devScan() {
+//     isD && scan();
+// }
 
-function prodScan() {
-    if (!isD) {
-        // not yet
-    }
-}
+// function prodScan() {
+//     if (!isD) {
+//         // not yet
+//     }
+// }
 
 let ml = 0; // memoized length
 let ms = ''; // memoized string
@@ -185,11 +185,11 @@ function toString() {
     return ms;
 }
 
-njss.dev = dev;
-njss.prod = prod;
-njss.scan = scan;
-njss.devScan = devScan;
-njss.prodScan = prodScan;
+// njss.dev = dev;
+// njss.prod = prod;
+// njss.scan = scan;
+// njss.devScan = devScan;
+// njss.prodScan = prodScan;
 njss.toString = toString;
 
 
