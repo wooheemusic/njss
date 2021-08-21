@@ -1,3 +1,9 @@
+let isD = Boolean(process && process.env && process.env.NODE_ENV === 'development'); // isDevMode
+// const cn = isD ? new Map() : null; // classnames to validate uniqueness
+// function isHotReloaded() { // not working for clients, `module` is just for this module
+//     return module && module.hot && module.hot.data !== undefined
+// }
+
 const h = s => s.replace(/[A-Z]/g, l => `-${l.toLowerCase()}`); // hyphenate
 const vs = s => /[.#*,\s>+~\[\]]/.test(s); // validateSelector
 
@@ -6,7 +12,7 @@ function c(prop, key) { // convert
         if (Array.isArray(prop)) {
             return csh(prop, key);
         }
-        throw new Error(`The CSS property '${key}' is invalid or has an invalid value.`);
+        if (isD) throw new Error(`The CSS property '${key}' is invalid or has an invalid value.`);
     }
     return csp(prop, key);
 };
@@ -23,7 +29,7 @@ function sf(v, s) { // suffix
 }
 
 function px(prop) { // number to px 
-    return isN(prop) ? sf(prop, 'px'): prop;
+    return isN(prop) ? sf(prop, 'px') : prop;
 }
 
 function s(prop) { // number to second
@@ -31,7 +37,7 @@ function s(prop) { // number to second
 }
 
 function percent(prop) {
-    return isN(prop) ? sf(prop, '%'): prop;
+    return isN(prop) ? sf(prop, '%') : prop;
 }
 
 function deg(prop) {
@@ -84,9 +90,6 @@ function csh(prop, key) { // convertShorthand
     }
 }
 
-// let isD = Boolean(process && process.env && process.env.NODE_ENV === 'development'); // isDevMode
-// const cn = isD ? [] : null; // classnames to validate uniqueness
-
 function njss(styles) { // export default
     p(styles).forEach(rule => r(rule));
 }
@@ -98,7 +101,7 @@ function append(arrA, arrB) {
     return arrA;
 }
 
-function p(style, className = '', pseudo = '', isKeyFrames = false, isUnderMedia = false) {
+function p(style, className = '', pseudo = '', isKeyFrames = false, media = '') {
     const ruleChain = [];
     const current = []; // collect css properties
     const ps = []; // deferred, collect pseudo selector
@@ -108,24 +111,35 @@ function p(style, className = '', pseudo = '', isKeyFrames = false, isUnderMedia
         if (!key) return;
         if (key[0] === '@') {
             if (key[1] === 'k' || key[1] === '-') {
-                if (pseudo !== '' || className !== '') throw new Error('@keyframes cannot be nested');
+                if (isD && (pseudo !== '' || className !== '' || isKeyFrames)) throw new Error('@keyframes cannot be nested');
                 kf.push(key);
             } else {
+                if (isD && isKeyFrames) throw new Error('Media queries cannot be in @keyframes');
                 ms.push(key);
             }
-        } else if (vs(key)) {
+        } else if (isD && vs(key)) {
             throw new Error(`'${key}' is inappropriate. Refer to the restrictions on https://github.com/wooheemusic/njss`)
         } else if (key[0] === ':') {
-            if (className === '') throw new Error(`A classname should precede '${key}'`);
+            if (isD && isKeyFrames) throw new Error(`'${key}' cannot be in @keyframes`);
+            if (isD && className === '') throw new Error(`A classname should precede '${key}'`);
             ps.push(key);
         } else if (className === '') {
-            // const hkey = h(key);
-            // if (!isKeyFrames && !isUnderMedia && cn) {
-            //     if (cn.indexOf(hkey) !== -1) throw new Error(`The classname '${key}' is not unique.`);
-            //     cn.push(hkey);
+            // check classname duplications, not a suitable design for liveReloading
+            //
+            // const hkey = h(key); 
+            // if (!isKeyFrames && cn) {
+            //     const hkeyArray = cn.get(hkey);
+            //     if (!hkeyArray) {
+            //         cn.set(hkey, [media]);
+            //     } else {
+            //         if (hkeyArray.indexOf(media) !== -1) {
+            //             throw new Error(`duplicated classname ${hkey} ${media}`)
+            //         } else {
+            //             hkeyArray.push(media);
+            //         }
+            //     }
             // }
-            // append(ruleChain, p(style[key], hkey, '', isKeyFrames, isUnderMedia));
-            append(ruleChain, p(style[key], h(key), '', isKeyFrames, isUnderMedia));
+            append(ruleChain, p(style[key], h(key), pseudo, isKeyFrames, media));
         } else {
             current.push(key);
         }
@@ -138,9 +152,9 @@ function p(style, className = '', pseudo = '', isKeyFrames = false, isUnderMedia
                 return v ? `${acc}${hk}:${v};` : acc;
             }, '')}}`);
     };
-    ps.forEach(key => append(ruleChain, p(style[key], className, pseudo + key)));
-    ms.forEach(key => ruleChain.push(`${key}{${p(style[key], className, pseudo, false, true).join('')}}`));
-    kf.forEach(key => ruleChain.push(`${key}{${p(style[key], className, pseudo, true).join('')}}`));
+    ps.forEach(key => append(ruleChain, p(style[key], className, pseudo + key, isKeyFrames, media)));
+    ms.forEach(key => ruleChain.push(`${key}{${p(style[key], className, pseudo, isKeyFrames, media + key).join('')}}`));
+    kf.forEach(key => ruleChain.push(`${key}{${p(style[key], className, pseudo, true, media).join('')}}`));
     return ruleChain;
 }
 
@@ -157,13 +171,13 @@ function r(rule) { // addRule
     sh && sh.insertRule(rule, sh.cssRules.length)
 }
 
-// function dev() {
-//     isD = true;
-// }
+function dev() {
+    isD = true;
+}
 
-// function prod() {
-//     isD = false;
-// }
+function prod() {
+    isD = false;
+}
 
 // function scan() {
 //     // not yet
@@ -189,8 +203,8 @@ function toString() {
     return ms;
 }
 
-// njss.dev = dev;
-// njss.prod = prod;
+njss.dev = dev;
+njss.prod = prod;
 // njss.scan = scan;
 // njss.devScan = devScan;
 // njss.prodScan = prodScan;
