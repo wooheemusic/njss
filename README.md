@@ -58,8 +58,8 @@ This module does not require something like `getClassName(style)`.
 ```css
 /* in css */
 .dog {
-    transform: rotate(10deg); // suppressed
-    transform: translateX(100px); // has the precedence
+    transform: rotate(10deg); /* suppressed */
+    transform: translateX(100px); /* has the precedence */
 }
 ```
 ```js
