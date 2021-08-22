@@ -1,6 +1,6 @@
 {
   "name": "njss",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "classname-based css-in-js",
   "main": "index.js",
   "scripts": {
