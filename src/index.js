@@ -246,4 +246,14 @@ njss.hsl = (...args) => pf(args.map((v, i) => (i === 1 || i === 2) ? percent(v) 
 njss.hsla = (...args) => pf(args.map((v, i) => (i === 1 || i === 2) ? percent(v) : v).join(', '), 'hsla');
 njss.rotate3d = (...args) => pf(args.map((e, i) => i === 3 ? deg(e) : e).join(', '), 'rotate3d');
 
-export default njss;
+// utils
+njss.merge = function (...styles) {
+    return styles.reduce(({ transform: ta, ...resta }, { transform: tb, ...restb }) => {
+        const t = [];
+        ta && t.push(ta)
+        tb && t.push(tb)
+        return { ...resta, ...restb, transform: t.join(' ') }
+    })
+}
+
+module.exports = njss;

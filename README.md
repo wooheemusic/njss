@@ -10,9 +10,7 @@ This module enables classname-based css-in-js.
 
 ## Usage
 ```js
-import njss from 'njss';
-
-const {rgb, skew, rem} = njss;
+import njss, {rgb, skew, rem} from 'njss';
 
 njss({
     '@keyframes move': {
@@ -55,6 +53,31 @@ This module does not require something like `getClassName(style)`.
 ```css
 .big-dog{color:red;}@media (orientation: landscape){.big-dog{color:rgb(100, 50, 50, 0.5);transform:skew(20deg, 20deg);transition:1s linear;margin:1rem 4px 5px 6px;}@media (min-width: 1000px){.big-dog:hover{color:blue;}.big-dog:hover:focus{color:green;}}}@keyframes move{0%{offset-distance:0%;}100%{offset-distance:100%;}}
 ```
+
+## merge
+```css
+/* in css */
+.dog {
+    transform: rotate(10deg); // suppressed
+    transform: translateX(100px); // has the precedence
+}
+```
+```js
+// in js
+import njss, { merge, translateX } from 'njss';
+
+const a = {width: 10, height: 1};
+const b = {color: 'red', transform: 'rotate(10deg)', width: 100};
+const c = {color: 'blue', transform: translateX(100)};
+
+const s = {...a, ...b, ...c }; 
+// {height: 1, width:100, color: 'blue', transform: 'translateX(100px)'};
+
+const r = merge(a, b, c); 
+// {height: 1, width:100, color: 'blue', transform: 'rotate(10deg) translateX(100px)'};
+```
+If you expect `r`, use `merge`.
+> Only `transform` is supported so far. 
 
 ## Validations in the dev mode
 This module validates styles only in the dev mode. If you do not use it in the `node` environment, you have to execute `njss.dev()` on your own to force the dev mode. `njss.prod()` is the opposite.
